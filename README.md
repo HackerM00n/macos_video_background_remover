@@ -26,8 +26,8 @@ This script automates the process of background removal from a video using FFmpe
 
 If you encounter the "macOS Cannot Verify That This App is Free From Malware" error, you can resolve it by doing the following:
 
-- Go to `System Preferences > Security & Privacy > General`.
-- Under the 'Allow apps downloaded from:' section, you should see a message about the script being blocked. Click 'Open Anyway' to proceed.
+- Go to ` > System Settings > Security & Privacy`.
+- Under the 'Security' section, you should see a message about the script being blocked. Click 'Open Anyway' to proceed.
 
 ## How to Run the Script Using Quick Actions
 
@@ -38,7 +38,6 @@ If you encounter the "macOS Cannot Verify That This App is Free From Malware" er
 3. **Follow the Prompts**: The Terminal will automatically open, and you'll be prompted to:
     - **Manually Remove Backgrounds from a Sequence of Images**: The folder containing the image sequence will automatically open. Select all images and use "Quick Actions > Remove Background".
     - **Wait for PNG Files**: Please wait until the .png files appear before proceeding.
-    - **Enter the Postfix**: You will be asked to enter the postfix used in the PNG filenames (e.g., "Background Removed"). This may vary depending on your macOS language setting.
     - **Delete Images**: After the script has successfully created the video, you'll have the option to delete the generated image sequence if you want.
 
 

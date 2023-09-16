@@ -53,19 +53,18 @@ height=$(echo $dimensions | awk -Fx '{print $2}')
 open "$image_folder"
 
 while true; do
-    echo -e "${green}Select .jpg files in the created '<video_name>_image_sequence' folder, and perform Quick Actions > Remove Background.\nThen, enter the postfix for created files [Press 'Enter ↵' for default 'Background Removed']:${reset}"
-    read postfix
+    echo -e "${green}Select .jpg files in the created '<video_name>_image_sequence' folder, and perform Quick Actions > Remove Background.\nOnce done, press 'Enter ↵' to continue.${reset}"
+    read -r dummy
 
-    if [ -z "$postfix" ]; then
-        postfix="Background Removed"
-    fi
-
-    if [ -f "${image_folder}/is_000001 ${postfix}.png" ]; then
+    if ls "${image_folder}"/*.png 1> /dev/null 2>&1; then
         break
     else
         echo -e "${red}No background-removed images found. Make sure to remove the background for all images and try again.${reset}"
     fi
 done
+
+first_png=$(ls "${image_folder}"/is_*.png | sort -V | head -n 1)
+postfix=$(basename "$first_png" | sed -E 's/is_[0-9]+ //;s/\.png//')
 
 output_filename="${parent_dir}/${filename_no_ext} ${postfix}.mp4"
 ffmpeg -framerate $fps -i "${image_folder}/is_%06d ${postfix}.png" -f lavfi -i "color=c=${bg_color}:s=${width}x${height}:r=$fps" -filter_complex "[1:v][0:v]overlay=shortest=1" -r $fps "$output_filename"
