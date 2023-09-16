@@ -51,7 +51,33 @@
 				<key>ActionParameters</key>
 				<dict>
 					<key>source</key>
-					<string>on run {input, parameters}    set filePath to POSIX path of (item 1 of input as alias)    tell application "Terminal"        activate        do script "~/remove_bg.sh \"" &amp; filePath &amp; "\""    end tellend run</string>
+					<string>on run {input, parameters}
+    set filePath to POSIX path of (item 1 of input as alias)
+    
+    -- Show color picker and get the selected color as RGB
+    set colorChoice to choose color default color {65535, 65535, 65535}
+    set redComponent to item 1 of colorChoice
+    set greenComponent to item 2 of colorChoice
+    set blueComponent to item 3 of colorChoice
+    
+    -- Convert RGB to Hex
+    set hexColor to "#" &amp; decimalToHex(redComponent div 256) &amp; decimalToHex(greenComponent div 256) &amp; decimalToHex(blueComponent div 256)
+    
+    -- Run Terminal and execute script
+    tell application "Terminal"
+        activate
+        do script "~/remove_bg.sh \"" &amp; filePath &amp; "\" \"" &amp; hexColor &amp; "\""
+    end tell
+end run
+
+-- Function to convert decimal to Hex
+on decimalToHex(d)
+    set hexList to "0123456789ABCDEF"
+    set x to item ((d div 16) + 1) of hexList
+    set y to item ((d mod 16) + 1) of hexList
+    return x &amp; y
+end decimalToHex
+</string>
 				</dict>
 				<key>BundleIdentifier</key>
 				<string>com.apple.Automator.RunScript</string>

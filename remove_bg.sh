@@ -11,6 +11,15 @@ if [ ! -f "$video_dir" ]; then
     exit 1
 fi
 
+bg_color="$2"
+if [ -z "$bg_color" ]; then
+    bg_color='#FFFFFF'
+fi
+
+echo -e "${green}Video path:${reset} $video_dir"
+
+echo -e "${green}Background color:${reset} $bg_color"
+
 if ! command -v brew &> /dev/null; then
   echo -e "${orange}Homebrew is not installed, installing now...${reset}"
   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
@@ -57,12 +66,6 @@ while true; do
         echo -e "${red}No background-removed images found. Make sure to remove the background for all images and try again.${reset}"
     fi
 done
-
-echo -e "${green}Enter the background color (e.g., blue, yellow, #FF0000, etc.) [Press 'Enter ↵' for default white]:${reset}"
-read bg_color
-if [ -z "$bg_color" ]; then
-    bg_color='white'
-fi
 
 output_filename="${parent_dir}/${filename_no_ext} ${postfix}.mp4"
 ffmpeg -framerate $fps -i "${image_folder}/is_%06d ${postfix}.png" -f lavfi -i "color=c=${bg_color}:s=${width}x${height}:r=$fps" -filter_complex "[1:v][0:v]overlay=shortest=1" -r $fps "$output_filename"

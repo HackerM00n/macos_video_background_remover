@@ -33,11 +33,12 @@ If you encounter the "macOS Cannot Verify That This App is Free From Malware" er
 
 1. **Select the Video**: Right-click on the video file and select "Quick Actions > Remove Background from Video".
 
-2. **Follow the Prompts**: The Terminal will automatically open, and you'll be prompted to:
+2. **Set a Custom Background Color**: You can choose a custom background color instead of the default 'white'.
+
+3. **Follow the Prompts**: The Terminal will automatically open, and you'll be prompted to:
     - **Manually Remove Backgrounds from a Sequence of Images**: The folder containing the image sequence will automatically open. Select all images and use "Quick Actions > Remove Background".
     - **Wait for PNG Files**: Please wait until the .png files appear before proceeding.
     - **Enter the Postfix**: You will be asked to enter the postfix used in the PNG filenames (e.g., "Background Removed"). This may vary depending on your macOS language setting.
-    - **Set a Custom Background Color**: You can choose a custom background color instead of the default 'white'.
     - **Delete Images**: After the script has successfully created the video, you'll have the option to delete the generated image sequence if you want.
 
 
