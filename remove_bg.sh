@@ -17,7 +17,6 @@ if [ -z "$bg_color" ]; then
 fi
 
 echo -e "${green}Video path:${reset} $video_dir"
-
 echo -e "${green}Background color:${reset} $bg_color"
 
 if ! command -v brew &> /dev/null; then
@@ -79,11 +78,41 @@ done
 output_filename="${parent_dir}/${filename_no_ext} ${postfix}.mp4"
 ffmpeg -framerate $fps -i "${image_folder}/is_%06d ${postfix}.png" -f lavfi -i "color=c=${bg_color}:s=${width}x${height}:r=$fps" -filter_complex "[1:v][0:v]overlay=shortest=1" -r $fps "$output_filename"
 
+has_audio=$(ffprobe -show_streams "$video_dir" 2>&1 | grep -c "Stream #[0-9]*:.*Audio:")
+
+if [ "$has_audio" -gt 0 ]; then
+    if [ $? -eq 0 ]; then
+        echo -e "${green}Do you want to copy the audio from the original video? (y/N)${reset}"
+        read copy_audio_option
+
+        if [[ $copy_audio_option == "Y" || $copy_audio_option == "y" ]]; then
+            audio_file="${parent_dir}/${filename_no_ext}_audio.aac"
+            ffmpeg -i "$video_dir" -vn -acodec copy "$audio_file"
+
+            final_output="${parent_dir}/${filename_no_ext} ${postfix} With Audio.mp4"
+            ffmpeg -i "$output_filename" -i "$audio_file" -c:v copy -c:a aac -strict experimental "$final_output"
+            if [ $? -eq 0 ]; then
+                echo -e "${green}Audio copied successfully.${reset}"
+                rm -f "$audio_file"
+            else
+                echo -e "${red}Error copying audio.${reset}"
+            fi
+        else
+            echo -e "${orange}No audio copied.${reset}"
+        fi
+    else
+        echo -e "${red}Error extracting audio.${reset}"
+    fi
+else
+    echo -e "${orange}The original video doesn't have an audio stream.${reset}"
+fi
+
 echo -e "${green}Do you want to delete the generated images and their folder? (y/N)${reset}"
 read delete_option
 
 if [[ $delete_option == "Y" || $delete_option == "y" ]]; then
     rm -rf "$image_folder"
+    rm -f "$audio_file"
 fi
 
 echo -e "${green}Done!${reset}"

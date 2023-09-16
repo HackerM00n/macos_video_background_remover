@@ -38,7 +38,8 @@ If you encounter the "macOS Cannot Verify That This App is Free From Malware" er
 3. **Follow the Prompts**: The Terminal will automatically open, and you'll be prompted to:
     - **Manually Remove Backgrounds from a Sequence of Images**: The folder containing the image sequence will automatically open. Select all images and use "Quick Actions > Remove Background".
     - **Wait for PNG Files**: Please wait until the .png files appear before proceeding.
-    - **Delete Images**: After the script has successfully created the video, you'll have the option to delete the generated image sequence if you want.
+    - **Copy Audio**: After the video has been created, you will be asked whether you'd like to copy the audio from the original video to the new video.
+    - **Delete Images**: Once the script completes its tasks, you'll have the option to delete the generated image sequence if you want.
 
 
 ## Enjoy Your Background-Free Video!
