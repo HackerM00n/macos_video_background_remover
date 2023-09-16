@@ -66,6 +66,16 @@ done
 first_png=$(ls "${image_folder}"/is_*.png | sort -V | head -n 1)
 postfix=$(basename "$first_png" | sed -E 's/is_[0-9]+ //;s/\.png//')
 
+min_index=1
+max_index=$(ls "${image_folder}"/is_*.png | sed -E 's/.*\/is_([0-9]+).*/\1/' | sort -n | tail -n1)
+
+for i in $(seq -f "%06g" $min_index $max_index); do
+    png_file="${image_folder}/is_${i} ${postfix}.png"
+    if [ ! -f "$png_file" ]; then
+        convert -size ${width}x${height} "xc:${bg_color}" "$png_file"
+    fi
+done
+
 output_filename="${parent_dir}/${filename_no_ext} ${postfix}.mp4"
 ffmpeg -framerate $fps -i "${image_folder}/is_%06d ${postfix}.png" -f lavfi -i "color=c=${bg_color}:s=${width}x${height}:r=$fps" -filter_complex "[1:v][0:v]overlay=shortest=1" -r $fps "$output_filename"
 
