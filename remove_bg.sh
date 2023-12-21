@@ -43,24 +43,32 @@ mkdir -p "$image_folder"
 
 fps=$(ffprobe -v error -select_streams v:0 -show_entries stream=r_frame_rate -of default=noprint_wrappers=1:nokey=1 "$video_dir" | bc -l)
 
-ffmpeg -i "$video_dir" -vf "fps=$fps" -q:v 2 "${image_folder}/is_%06d.jpg"
+if ls "${image_folder}"/*.png 1> /dev/null 2>&1; then
+  echo -e "${green}PNG images found. Skipping frame extraction.${reset}"
 
-dimensions=$(identify -format "%wx%h" "${image_folder}/is_000001.jpg")
-width=$(echo $dimensions | awk -Fx '{print $1}')
-height=$(echo $dimensions | awk -Fx '{print $2}')
+  dimensions=$(identify -format "%wx%h" "${image_folder}/is_000001.jpg")
+  width=$(echo $dimensions | awk -Fx '{print $1}')
+  height=$(echo $dimensions | awk -Fx '{print $2}')
+else
+  ffmpeg -i "$video_dir" -vf "fps=$fps" -q:v 2 "${image_folder}/is_%06d.jpg"
 
-open "$image_folder"
+  dimensions=$(identify -format "%wx%h" "${image_folder}/is_000001.jpg")
+  width=$(echo $dimensions | awk -Fx '{print $1}')
+  height=$(echo $dimensions | awk -Fx '{print $2}')
 
-while true; do
-    echo -e "${green}Select .jpg files in the created '<video_name>_image_sequence' folder, and perform Quick Actions > Remove Background.\nOnce done, press 'Enter ↵' to continue.${reset}"
-    read -r dummy
+  open "$image_folder"
 
-    if ls "${image_folder}"/*.png 1> /dev/null 2>&1; then
-        break
-    else
-        echo -e "${red}No background-removed images found. Make sure to remove the background for all images and try again.${reset}"
-    fi
-done
+  while true; do
+      echo -e "${green}Select .jpg files in the created '<video_name>_image_sequence' folder, and perform Quick Actions > Remove Background.\nOnce done, press 'Enter ↵' to continue.${reset}"
+      read -r dummy
+
+      if ls "${image_folder}"/*.png 1> /dev/null 2>&1; then
+          break
+      else
+          echo -e "${red}No background-removed images found. Make sure to remove the background for all images and try again.${reset}"
+      fi
+  done
+fi
 
 first_png=$(ls "${image_folder}"/is_*.png | sort -V | head -n 1)
 postfix=$(basename "$first_png" | sed -E 's/is_[0-9]+ //;s/\.png//')
